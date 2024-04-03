@@ -1,5 +1,5 @@
 # ops-tf-challenge
-## Part 1: Random pet provider (gh repo) challenge
+## Part 1: Random pet resource (gh repo) challenge
 
 ### The Task
 

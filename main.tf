@@ -1,5 +1,13 @@
-provider "aws" {
-  region = "eu-west-2"
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+    }
+
+    random = {
+      source = "hashicorp/random"
+    }
+  }
 }
 
 data "aws_ami" "ubuntu" {
@@ -18,21 +26,21 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-# Creating an AWS instance
+provider "aws" {
+  region = "eu-west-2"
+}
+
+# Creating an AWS instance which uses the random provider for its name
 resource "aws_instance" "ec2_test" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.micro"
   tags = {
-    Name = "My Test Instance"
+    Name = "Test-${random_string.random_name.id}"
   }
 }
 
-# Adding null resource; the trigger will only execute once when it detects the instance id of EC2 instance 
-resource "null_resource" "null_resource_test" {
-  triggers = {
-    id = aws_instance.ec2_test.id
-  }
-  provisioner "local-exec" {
-    command = "echo This is a great test!"
-  }
+resource "random_string" "random_name" {
+  length  = 8
+  special = false
+  upper   = true
 }
